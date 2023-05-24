@@ -2,6 +2,7 @@ import json
 from hanspell import spell_checker
 from flask import Flask, request, current_app
 from collections import OrderedDict
+from recommend import get_results
 
 app = Flask(__name__)
 
@@ -21,6 +22,14 @@ def correction():
     except Exception as e:
         print("Someting wrong!!", e)
         return api_response(500, "Internal Server Error", str(e)), 500
+
+
+@app.route('/api/v1/profile/recommend', methods=['POST'])
+def recommend():
+    my_profile_id = request.get_json()['id']
+    profile_list = request.get_json()['profiles']
+    df_result = get_results(profile_list, my_profile_id)
+    return api_response(200, "추천 목록 조회 성공", {"sortedIdList": df_result}), 200
 
 
 @app.route('/')
