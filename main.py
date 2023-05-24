@@ -6,7 +6,7 @@ from collections import OrderedDict
 app = Flask(__name__)
 
 
-def ApiResponse(status, message, data):
+def api_response(status, message, data):
     return current_app.response_class(
         json.dumps(OrderedDict([('status', status), ('message', message), ('data', data)]),
                    indent=None), mimetype='application/json')
@@ -17,10 +17,10 @@ def correction():
     try:
         chat = request.get_json()['chat']
         corrected = spell_checker.check(chat)
-        return ApiResponse(200, "hanspell 성공", corrected), 200
+        return api_response(200, "hanspell 성공", corrected), 200
     except Exception as e:
         print("Someting wrong!!", e)
-        return ApiResponse(500, "Internal Server Error", str(e)), 500
+        return api_response(500, "Internal Server Error", str(e)), 500
 
 
 @app.route('/')
